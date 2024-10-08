@@ -1,0 +1,301 @@
+* {
+  margin: 0;
+}
+
+.item:hover {
+  background: rgb(244, 244, 244);
+  cursor: pointer;
+}
+.card {
+  text-align: center;
+}
+.card:hover {
+  background: rgb(244, 244, 244);
+  cursor: pointer;
+}
+/* .content{
+padding: 0 10px 0 10px;
+} */
+.contentTask {
+  /* width: 70%; */
+}
+
+.status {
+  color: rgb(209, 244, 199);
+  font-weight: 700;
+  background: rgb(6, 181, 38);
+  border-radius: 10px;
+  padding: 5px 10px 5px 10px;
+  font-size: 12px;
+}
+.header {
+  background: #c31f5e;
+  height: 70px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  color: white;
+  gap: 10px;
+  padding-right: 10px;
+}
+.tableDescription {
+  border-collapse: collapse;
+  width: 100%;
+}
+.tableDescription tr,
+.tableDescription th,
+.tableDescription td {
+  padding: 0 20px 0 10px;
+  text-align: left;
+  border: 1px rgb(232, 234, 239) solid;
+}
+.ant-table-wrapper .ant-table-tbody > tr > th,
+:where(.css-dev-only-do-not-override-pr0fja).ant-table-wrapper
+  .ant-table-tbody
+  > tr
+  > td {
+  border: none;
+  padding: 5px;
+}
+.table {
+  margin-top: 20px;
+  /* box-shadow: 1px 1px 12px rgb(243, 241, 241); */
+}
+.title-table {
+  font-size: 1.2rem;
+  color: rgb(48, 50, 50);
+  font-weight: 500;
+}
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ant-table-thead th {
+  color: rgb(85, 88, 92) !important;
+  /* background: rgb(240, 239, 239) !important; */
+}
+.input-form{
+  border-radius: 20px;
+}
+.input-form:hover{
+  border: 1px red solid !important;
+}
+.ant-table-tbody {
+  color: rgb(85, 88, 92);
+}
+.login-form {
+  max-width: 300px;
+}
+.login-form-forgot {
+  float: right;
+}
+.ant-col-rtl .login-form-forgot {
+  float: left;
+}
+.login-form-button {
+  width: 100%;
+  background: rgb(247, 38, 38);
+  border-radius: 20px;
+}
+.login-form-button:hover{
+  background: rgb(235, 12, 12) !important;
+}
+.content-login {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+.img-absolute {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 1100vh;
+  z-index: -1;
+  opacity: 0.4;
+  background-image: url("https://img.freepik.com/vector-premium/elegante-patron-geometrico-transparente-blanco_118503-2831.jpg?w=826");
+}
+.img-logo-horizontal {
+  max-width: 300px;
+  margin-bottom: 20px;
+  mix-blend-mode:multiply;
+}
+.content-desc {
+  background: white;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px rgb(230, 237, 236) solid;
+  gap: 2px;
+}
+.image-logo {
+  width: 100%;
+  padding: 10px 0 10px 0;
+  object-fit: contain;
+}
+.name-role {
+  color: #5c82eb;
+  font-size: .9rem;
+  font-style: oblique;
+  text-align: center;
+}
+:where(
+    .css-dev-only-do-not-override-pr0fja
+  ).ant-menu-light.ant-menu-root.ant-menu-inline,
+:where(.css-dev-only-do-not-override-pr0fja).ant-menu-light
+  > .ant-menu.ant-menu-root.ant-menu-inline,
+:where(
+    .css-dev-only-do-not-override-pr0fja
+  ).ant-menu-light.ant-menu-root.ant-menu-vertical,
+:where(.css-dev-only-do-not-override-pr0fja).ant-menu-light
+  > .ant-menu.ant-menu-root.ant-menu-vertical {
+  border-inline-end: 0px solid rgba(5, 5, 5, 0.06);
+}
+.content-flex {
+  display: flex;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+.content-flex .flex-left {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  border-right: 4px #f23b81 solid;
+  gap: 17px;
+  padding: 60px;
+  justify-content: center;
+}
+.content-flex .flex-left img {
+  max-width: 300px;
+}
+.content-flex .flex-left h4 {
+  color: #5e6b76;
+  font-weight: 700;
+  font-size: 1.9rem;
+  font-family: sans-serif;
+}
+.content-flex .flex-left span {
+  font-family: sans-serif;
+  line-height: 1.8;
+  text-align: justify;
+  color: rgb(89, 101, 106);
+}
+.content-flex .flex-right {
+  width: 50%;
+  background: rgb(30, 57, 82);
+  height: 100%;
+}
+.wrap-button {
+  display: flex;
+  gap: 20px;
+}
+.wrap-button .wrap-bt {
+  background-color: rgb(210, 17, 75);
+  color: white;
+  border: none;
+  padding: 5px 12px 5px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.wrap-button .wrap-bt:nth-child(2) {
+  background-color: rgb(83, 84, 90);
+}
+.wrap-button .wrap-bt:hover {
+  box-shadow: 0px 0px 10px rgb(165, 166, 167);
+  cursor: pointer;
+}
+.flex-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: rgb(203, 205, 207);
+  font-family: sans-serif;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+.flex-right h4 {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: white;
+}
+.flex-right img {
+  width: 50%;
+  height: 40%;
+}
+.flex-right span {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.movable-container {
+  width: 446.25px;
+  height: 631.5px;
+  border: 1px solid #000;
+  position: relative;
+  overflow: hidden;
+  background-image: url("./assets/preview-doc.png");
+  background-size: contain;
+}
+
+.movable {
+  width: 123.75px;
+  height: 52.5px;
+  background-color: #00f;
+  position: absolute;
+  cursor: pointer;
+}
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: none;
+  border: none;
+}
+.firm-image {
+  background-image: url("./assets/firma.png");
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 900px;
+  background-size: 600px;
+  background-position: center;
+}
+.spam-title {
+  color: #55565c;
+}
+.hover-edit {
+  padding: 0 10px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  border-radius: 3px;
+}
+.hover-delete {
+  padding: 0 10px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  color: red;
+  border-radius: 3px;
+}
+.hover-delete:hover{
+  background: rgb(250, 234, 234);
+
+}
+
+.hover-edit:hover {
+  background: rgb(237, 237, 242);
+}
