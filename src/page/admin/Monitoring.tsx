@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import CloroGlobalLine from "../../components/CloroGlobalLine";
 import { Button, Col, Row, Select, Spin, Table, Tag } from "antd";

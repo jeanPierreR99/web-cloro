@@ -69,7 +69,7 @@ const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
     {
       title: "Acciones",
       key: "acciones",
-      render: (text: any, record: CentroPoblado) => (
+      render: (_text: any, record: CentroPoblado) => (
         <Space size="middle">
           <Button icon={<EyeOutlined />} onClick={() => onEdit(record)}>
             Ver/Editar

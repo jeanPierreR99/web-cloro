@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   DeploymentUnitOutlined,
   HomeOutlined,
@@ -20,7 +20,7 @@ const { Header, Sider, Content } = Layout;
 function RouteAdmin() {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const [user, setUser] = useState({});
+  const [_user, setUser] = useState({});
 
   const {
     token: { colorBgContainer, borderRadiusLG },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import RouteAdmin from "./RouteAdmin";
 import RouteDefault from "./RouteDefault";
 const RouteMain: React.FC = () => {

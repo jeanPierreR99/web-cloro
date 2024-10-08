@@ -1,4 +1,3 @@
-import React from "react";
 import CloroGlobalChart from "../../components/CloroGlobalChart";
 import CloroColumnChart from "../../components/CloroColumnChart";
 

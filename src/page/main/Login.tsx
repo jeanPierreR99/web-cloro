@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import logoDRVCS from "../../assets/logo-drvcs.png";
 
 const Login = () => {
-  const [error, setError] = useState(false);
+  const [error, _setError] = useState(false);
   const onFinish = (values: any) => {
     console.log(values);
   };

@@ -1,18 +1,15 @@
 // ManageGestores.tsx
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Space, Modal, Form, Input, notification, Select } from "antd";
 import TableGestor from "../../components/TableGestor";
 import { PlusOutlined } from "@ant-design/icons";
 import {
-  addDoc,
   collection,
   doc,
-  Firestore,
   getDocs,
   getFirestore,
   setDoc,
-  updateDoc,
 } from "firebase/firestore";
 import appFirebase from "../../js/credentials";
 import axios from "axios";

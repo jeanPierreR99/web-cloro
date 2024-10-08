@@ -58,7 +58,7 @@ const CloroColumnChart = () => {
     column.emit("tooltip:hide");
   };
 
-  const setTooltipPosition = (evt:any, chart:any) => {
+  const setTooltipPosition = (_evt:any, _chart:any) => {
     showTooltip(data);
   };
 
