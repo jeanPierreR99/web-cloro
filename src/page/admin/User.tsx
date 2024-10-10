@@ -1,15 +1,27 @@
 // ManageGestores.tsx
 
 import { useEffect, useState } from "react";
-import { Button, Space, Modal, Form, Input, notification, Select } from "antd";
+import {
+  Button,
+  Space,
+  Modal,
+  Form,
+  Input,
+  notification,
+  Select,
+  Spin,
+} from "antd";
 import TableGestor from "../../components/TableGestor";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   collection,
   doc,
-  getDocs,
   getFirestore,
+  onSnapshot,
+  query,
   setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import appFirebase from "../../js/credentials";
 import axios from "axios";
@@ -18,6 +30,7 @@ const { Option } = Select;
 const { Search } = Input;
 
 interface gestoresProp {
+  gestor_create_at: string;
   gestor_id: string;
   gestor_name_complete: string;
   gestor_phone: string;
@@ -26,6 +39,14 @@ interface gestoresProp {
   gestor_password: string;
   gestor_status: boolean;
 }
+
+function getDate() {
+  const now = new Date();
+  const localDate = now.toLocaleDateString();
+
+  return localDate;
+}
+
 const User = () => {
   const [gestores, setGestores] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -33,54 +54,67 @@ const User = () => {
   const [loadSearch, setLoadSearch] = useState(false);
   const [centros, setCentros] = useState<any[]>([]);
   const [form] = Form.useForm();
+  const [loadAdd, setLoaddAdd] = useState<boolean>(false);
 
-  const fetchCenters = async () => {
-    const dataCentros: any = [];
+  const fetchCenters = () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "centros_poblados"));
-      querySnapshot.docs.forEach((doc) => {
-        dataCentros.push(doc.data());
+      const q = query(
+        collection(db, "centros_poblados"),
+        where("centro_status", "==", false)
+      );
+
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const dataCentros: any = [];
+        querySnapshot.forEach((doc) => {
+          dataCentros.push(doc.data());
+        });
+
+        setCentros(dataCentros);
       });
 
-      setCentros(dataCentros);
+      return unsubscribe;
     } catch (error) {
-      console.error("Error al obtener datos: ", error);
+      console.error("Error al obtener datos en tiempo real: ", error);
     }
   };
 
-  const fetchGestores = async () => {
-    const dataGestores: any = [];
+  const fetchGestores = () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "gestores"));
-      querySnapshot.docs.forEach((doc) => {
-        dataGestores.push(doc.data());
+      const unsubscribe = onSnapshot(collection(db, "gestores"), (snapshot) => {
+        const dataGestores: any = [];
+        snapshot.docs.forEach((doc) => {
+          dataGestores.push(doc.data());
+        });
+
+        setGestores(dataGestores);
+        setIsLoading(false);
       });
 
-      setGestores(dataGestores);
-      setIsLoading(false);
+      return unsubscribe;
     } catch (error) {
-      console.error("Error al obtener datos: ", error);
+      console.error("Error al obtener datos en tiempo real: ", error);
     }
   };
 
-  // const updateDocCentro = async (centroId: string, gestorId: string) => {
-  //   const docRef = doc(db, "centros_poblados", centroId);
-  //   await updateDoc(docRef, {
-  //     centro_id: gestorId,
-  //   });
-  // };
   const addData = async (values: gestoresProp) => {
     try {
+      setLoaddAdd(true);
       const docRef = doc(collection(db, "gestores"));
       const client_id = docRef.id;
 
+      values.gestor_create_at = getDate();
       values.gestor_id = client_id;
       values.gestor_status = true;
 
+      const docRefCentro = doc(
+        db,
+        "centros_poblados",
+        values.id_centro_poblado
+      );
       await setDoc(docRef, values);
-      // updateDocCentro(values.id_centro_poblado, client_id);
-      setGestores([...gestores, values]);
+      await updateDoc(docRefCentro, { centro_status: true });
       form.resetFields();
+
       setIsAddModalVisible(false);
 
       notification.success({
@@ -88,8 +122,10 @@ const User = () => {
         description: `El gestor ${values.gestor_name_complete} ha sido agregado con éxito.`,
         placement: "top",
       });
+      setLoaddAdd(false);
     } catch (error) {
       console.error("Error al agregar datos: ", error);
+      setLoaddAdd(false);
       notification.error({
         message: "Error",
         description: "No se pudo agregar el gestor.",
@@ -124,8 +160,14 @@ const User = () => {
   };
 
   useEffect(() => {
-    fetchGestores();
+    const unsubscribeGestores = fetchGestores();
+    const unsubscribeCenters = fetchCenters();
     fetchCenters();
+
+    return () => {
+      if (unsubscribeGestores) unsubscribeGestores();
+      if (unsubscribeCenters) unsubscribeCenters();
+    };
   }, []);
 
   return (
@@ -227,9 +269,11 @@ const User = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" block>
-                Guardar
-              </Button>
+              <Spin spinning={loadAdd}>
+                <Button type="primary" htmlType="submit" block>
+                  Guardar
+                </Button>
+              </Spin>
             </Form.Item>
           </Form>
         </Modal>

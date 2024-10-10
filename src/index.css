@@ -13,12 +13,6 @@
   background: rgb(244, 244, 244);
   cursor: pointer;
 }
-/* .content{
-padding: 0 10px 0 10px;
-} */
-.contentTask {
-  /* width: 70%; */
-}
 
 .status {
   color: rgb(209, 244, 199);
@@ -76,12 +70,6 @@ padding: 0 10px 0 10px;
   color: rgb(85, 88, 92) !important;
   /* background: rgb(240, 239, 239) !important; */
 }
-.input-form{
-  border-radius: 20px;
-}
-.input-form:hover{
-  border: 1px red solid !important;
-}
 .ant-table-tbody {
   color: rgb(85, 88, 92);
 }
@@ -96,12 +84,8 @@ padding: 0 10px 0 10px;
 }
 .login-form-button {
   width: 100%;
-  background: rgb(247, 38, 38);
-  border-radius: 20px;
 }
-.login-form-button:hover{
-  background: rgb(235, 12, 12) !important;
-}
+ 
 .content-login {
   display: flex;
   justify-content: center;

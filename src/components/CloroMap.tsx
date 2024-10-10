@@ -1,70 +1,153 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Polygon, Popup, useMap } from "react-leaflet";
+import { useEffect, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Polygon,
+  Popup,
+  useMap,
+  Marker,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
+import appFirebase from "../js/credentials";
+const db = getFirestore(appFirebase);
 
-const areas = [
+const areas: any = [
   {
-    name: "Centro Poblado Shintuya",
+    name: "MADRE DE DIOS",
     coordinates: [
-      [-12.556218, -69.208889],
-      [-12.615191, -69.219875],
-      [-12.616531, -69.200649],
-      [-12.596093, -69.155674],
-    ],
-  },
-  {
-    name: "Centro Poblado Puerto Maldonado",
-    coordinates: [
-      [-12.5940, -70.1995],
-      [-12.5945, -70.2000],
-      [-12.5930, -70.2010],
-      [-12.5925, -70.1990],
-    ],
-  },
-  {
-    name: "Centro Poblado Santo Domingo",
-    coordinates: [
-      [-12.5800, -70.2160],
-      [-12.5805, -70.2170],
-      [-12.5790, -70.2180],
-      [-12.5785, -70.2155],
+      [-9.849038, -70.618279],
+      [-10.992076, -70.610582],
+      [-10.990558, -69.569583],
+      [-12.531315, -68.651379],
+      [-13.033356, -68.870803],
+      [-13.353803, -69.723178],
+      [-13.312744, -71.056598],
+      [-12.110822, -72.170594],
+      [-11.044311, -72.179033],
     ],
   },
 ];
 
-// Componente para establecer el centro del mapa
 const MapView = () => {
   const map = useMap();
 
   useEffect(() => {
-    map.setView([-12.5862, -70.2410], 10); // Establece el centro y el zoom inicial
+    map.setView([-12.5862, -70.241], 6);
   }, [map]);
 
-  return null; // Este componente no necesita renderizar nada
+  return null;
 };
 
-const CloroDashboard = () => (
-  <MapContainer style={{ height: "400px", width: "100%" }}>
-    <TileLayer
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      // La propiedad attribution se mueve al MapContainer
-    />
-    <MapView />
-    {areas.map((area) => (
-      <Polygon key={area.name} positions={area.coordinates}>
-        <Popup>
-          {area.name}
-        </Popup>
-      </Polygon>
-    ))}
-  </MapContainer>
-);
+const CloroDashboard = ({ centros }: any) => {
+  const customIcon = new L.Icon({
+    iconUrl:
+      "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png", // Reemplaza con la ruta a tu ícono
+    iconSize: [50, 50],
+    iconAnchor: [12, 41],
+  });
 
-const CloroMap = () => (
-  <div>
-    <h1>Monitoreo de Cloro en Madre de Dios</h1>
-    <CloroDashboard />
-  </div>
-);
+  return (
+    <MapContainer style={{ height: "100%", width: "100%" }}>
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <MapView />
+      {areas.map((area: any) => (
+        <Polygon key={area.name} positions={area.coordinates}>
+          <Popup>{area.name}</Popup>
+        </Polygon>
+      ))}
+      {centros &&
+        centros.map((data: any, index: any) => (
+          <Marker
+            key={index}
+            position={[
+              parseFloat(data.centro_latitude),
+              parseFloat(data.centro_longitud),
+            ]}
+            icon={customIcon}
+          >
+            <Popup>
+              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <span>
+                  <strong>Centro poblado:</strong> {data.centro_name}
+                </span>
+                <span>
+                  <strong>Gestor:</strong> {data.gestor_name}
+                </span>
+                <span>
+                  <strong>DNI:</strong> {data.gestor_dni}
+                </span>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+    </MapContainer>
+  );
+};
+
+const CloroMap = () => {
+  const [data, setData] = useState<any[]>([]);
+
+  const fectchGestores = async () => {
+    const dataGestores: any = [];
+    try {
+      const querySnapshot = await getDocs(collection(db, "gestores"));
+      querySnapshot.docs.forEach((doc) => {
+        dataGestores.push(doc.data());
+      });
+
+      return await dataGestores;
+    } catch (error) {
+      console.error("Error al obtener datos: ", error);
+    }
+  };
+
+  const fetchCenters = async () => {
+    const dataCentros: any = [];
+    try {
+      const querySnapshot = await getDocs(collection(db, "centros_poblados"));
+      querySnapshot.docs.forEach((doc) => {
+        dataCentros.push(doc.data());
+      });
+
+      return await dataCentros;
+    } catch (error) {
+      console.error("Error al obtener datos: ", error);
+    }
+  };
+
+  const fetchCentersAndGestor = async () => {
+    const centers = await fetchCenters();
+    const gestors = await fectchGestores();
+
+    var dataArray: any[] = [];
+    gestors.forEach((data: any) => {
+      centers.forEach((element: any) => {
+        if (data.id_centro_poblado == element.centro_id) {
+          dataArray.push({
+            centro_name: element.centro_nombre,
+            centro_latitude: element.centro_latitud,
+            centro_longitud: element.centro_longitud,
+            gestor_name: data.gestor_name_complete,
+            gestor_dni: data.gestor_dni,
+          });
+        }
+      });
+    });
+    setData(dataArray);
+  };
+
+  useEffect(() => {
+    fetchCentersAndGestor();
+  }, []);
+
+  return (
+    <div style={{ width: "100%" }}>
+      <h1>Madre de Dios</h1>
+      <CloroDashboard centros={data} />
+    </div>
+  );
+};
 
 export default CloroMap;

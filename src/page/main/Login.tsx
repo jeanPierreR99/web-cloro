@@ -1,13 +1,58 @@
 import { useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input } from "antd";
-// import { useNavigate } from "react-router-dom";
+import { Button, Checkbox, Form, Input, Spin } from "antd";
 import logoDRVCS from "../../assets/logo-drvcs.png";
+import appFirebase from "../../js/credentials";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
+import { saveToLocalStorage } from "../../js/functions";
+import { useLogin } from "../../context/Context.provider";
+import { useNavigate } from "react-router-dom";
+const db = getFirestore(appFirebase);
 
 const Login = () => {
-  const [error, _setError] = useState(false);
-  const onFinish = (values: any) => {
-    console.log(values);
+  const [error, setError] = useState(false);
+  const [load, setLoad] = useState(false);
+  const { login } = useLogin();
+  const navigate = useNavigate();
+
+  const onFinish = async (values: any) => {
+    setLoad(true);
+    try {
+      const userQuery = query(
+        collection(db, "user_admin"),
+        where("user", "==", values.username),
+        where("password", "==", values.password)
+      );
+
+      const querySnapshot = await getDocs(userQuery);
+
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const dataStoraga = {
+            user: data.name,
+            role: Date(),
+          };
+          saveToLocalStorage(dataStoraga);
+          navigate("/admin");
+          login();
+        });
+      } else {
+        setLoad(false);
+        setError(true);
+        console.log("No se encontraron usuarios con esas credenciales.");
+      }
+    } catch (error) {
+      setLoad(false);
+      setError(true);
+      console.error("Error al obtener datos: ", error);
+    }
   };
 
   return (
@@ -69,13 +114,15 @@ const Login = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
-          >
-            Ingresar
-          </Button>
+          <Spin spinning={load}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+            >
+              Ingresar
+            </Button>
+          </Spin>
         </Form.Item>
       </Form>
     </center>

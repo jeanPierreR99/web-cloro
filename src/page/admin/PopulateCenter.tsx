@@ -15,8 +15,8 @@ import TablePopulateCenter from "../../components/TablePopulateCenter";
 import {
   collection,
   doc,
-  getDocs,
   getFirestore,
+  onSnapshot,
   setDoc,
 } from "firebase/firestore";
 import appFirebase from "../../js/credentials";
@@ -34,6 +34,7 @@ export interface centrosProp {
   centro_latitud: string;
   centro_longitud: string;
   centro_enMeta: boolean;
+  centro_status: boolean;
 }
 
 interface MonitorAuxiliar {
@@ -57,18 +58,24 @@ const PopulateCenter: React.FC = () => {
     Tambopata: ["Tambopata", "Inambari", "Las piedras", "Laberinto"],
   };
 
-  const fetchCenters = async () => {
-    const dataCentros: any = [];
+  const fetchCenters = () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "centros_poblados"));
-      querySnapshot.docs.forEach((doc) => {
-        dataCentros.push(doc.data());
-      });
+      const unsubscribe = onSnapshot(
+        collection(db, "centros_poblados"),
+        (snapshot) => {
+          const dataCentros: any = [];
+          snapshot.docs.forEach((doc) => {
+            dataCentros.push(doc.data());
+          });
 
-      setCentros(dataCentros);
-      setIsLoading(false);
+          setCentros(dataCentros);
+          setIsLoading(false);
+        }
+      );
+
+      return unsubscribe;
     } catch (error) {
-      console.error("Error al obtener datos: ", error);
+      console.error("Error al obtener datos en tiempo real: ", error);
     }
   };
 
@@ -79,6 +86,7 @@ const PopulateCenter: React.FC = () => {
       const client_id = docRef.id;
 
       values.centro_id = client_id;
+      values.centro_status = false;
 
       await setDoc(docRef, values);
 
@@ -91,7 +99,6 @@ const PopulateCenter: React.FC = () => {
 
       await set(dbRefAuxiliar, objAuxiliar);
 
-      setCentros([...centros, values]);
       form.resetFields();
       setIsAddModalVisible(false);
       setLoadAdd(false);
@@ -126,7 +133,13 @@ const PopulateCenter: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCenters();
+    const unsubscribe = fetchCenters();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   return (

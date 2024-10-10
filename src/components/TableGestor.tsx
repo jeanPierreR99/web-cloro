@@ -21,6 +21,7 @@ import {
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import appFirebase from "../js/credentials";
@@ -29,6 +30,7 @@ import CloroRadarChart from "./CloroRadarChart";
 const db = getFirestore(appFirebase);
 
 export interface Gestor {
+  gestor_create_at: string;
   gestor_id: string;
   gestor_dni: string;
   id_centro_poblado: string;
@@ -122,10 +124,24 @@ const TableGestor: React.FC<GestorTableProps> = ({
     }
   };
 
-  const confirm = () =>
-    new Promise((resolve) => {
-      setTimeout(() => resolve(null), 3000);
-    });
+  const confirm = async (gestorId: any) => {
+    try {
+      const docRefGestor = doc(db, "gestores", gestorId);
+      await updateDoc(docRefGestor, { gestor_status: false });
+      notification.success({
+        message: "Dado de baja",
+        description: `El gestor ha sido dado de baja`,
+        placement: "top",
+      });
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: "No se pudo dar de baja al gestor.",
+        placement: "top",
+      });
+      console.error("Error actualizando el campo: ", error);
+    }
+  };
 
   const menu = (gestor: Gestor) => (
     <Menu>
@@ -150,8 +166,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
         <Popconfirm
           title={`Seguro que queire dar de baja`}
           description={`${gestor.gestor_name_complete}`}
-          onConfirm={confirm}
-          onOpenChange={() => console.log("open change")}
+          onConfirm={() => confirm(gestor.gestor_id)}
         >
           <p className="hover-delete">Eliminar</p>
         </Popconfirm>
@@ -171,6 +186,11 @@ const TableGestor: React.FC<GestorTableProps> = ({
   };
 
   const columns = [
+    {
+      title: "Fecha de registro",
+      dataIndex: "gestor_create_at",
+      key: "gestor_create_at",
+    },
     {
       title: "Nombre Completo",
       dataIndex: "gestor_name_complete",
@@ -291,6 +311,10 @@ const TableGestor: React.FC<GestorTableProps> = ({
           </thead>
           <Spin spinning={loadByEdit} tip={"...cargando"}>
             <tbody style={{ textAlign: "justify" }}>
+              <tr>
+                <th>Fecha de registro: </th>
+                <td>{infoGestor?.gestor.gestor_create_at}</td>
+              </tr>
               <tr>
                 <th>DNI:</th>
                 <td>{infoGestor?.gestor.gestor_dni}</td>

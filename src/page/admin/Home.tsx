@@ -1,16 +1,10 @@
-import CloroGlobalChart from "../../components/CloroGlobalChart";
-import CloroColumnChart from "../../components/CloroColumnChart";
+import CloroMap from "../../components/CloroMap";
 
 const Home = () => {
   return (
     <>
-      <div>
-        <div>
-          <span>Promedio de Cloro Por Centro Poblado</span>
-          <CloroGlobalChart />
-          <span>Promedio de Cloro Por Mes</span>
-          <CloroColumnChart></CloroColumnChart>
-        </div>
+      <div style={{display:"flex", width:"100%", height:"100%"}}>
+        <CloroMap></CloroMap>
       </div>
     </>
   );

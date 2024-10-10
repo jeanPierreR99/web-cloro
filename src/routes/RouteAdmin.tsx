@@ -15,10 +15,12 @@ import Home from "../page/admin/Home";
 import User from "../page/admin/User";
 import PopulateCenter from "../page/admin/PopulateCenter";
 import Monitoring from "../page/admin/Monitoring";
+import { useLogin } from "../context/Context.provider";
 const { Header, Sider, Content } = Layout;
 
 function RouteAdmin() {
   const navigate = useNavigate();
+  const { logout } = useLogin();
   const [collapsed, setCollapsed] = useState(false);
   const [_user, setUser] = useState({});
 
@@ -28,6 +30,8 @@ function RouteAdmin() {
 
   const closeSession = () => {
     localStorage.clear();
+    navigate("/")
+    logout();
   };
 
   const getStorage = () => {
@@ -136,7 +140,7 @@ function RouteAdmin() {
           <Routes>
             <Route path="/admin" element={<Home />} />
             <Route path="/admin/user" element={<User />} />
-            <Route path="/admin/monitoring" element={< Monitoring />} />
+            <Route path="/admin/monitoring" element={<Monitoring />} />
             <Route path="/admin/populate-center" element={<PopulateCenter />} />
           </Routes>
         </Content>

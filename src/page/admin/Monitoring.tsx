@@ -36,10 +36,8 @@ interface MonitorCloroUserCenter {
 }
 
 const obtenerMesTexto = (date: string) => {
-  // Crea un objeto Date a partir del string de la fecha
   const fecha = new Date(date.split("/").reverse().join("-"));
 
-  // Obtiene el mes en formato largo (ej. "Marzo")
   return fecha.toLocaleString("es-ES", { month: "long" });
 };
 
