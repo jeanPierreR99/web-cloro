@@ -157,8 +157,6 @@ const Monitoring = () => {
   };
 
   const handleExport = () => {
-    // Crear una nueva hoja de cálculo a partir de los datos JSON
-
     const centro_nombre = infoAll?.centro_poblado?.centro_nombre;
     const centro_provincia = infoAll?.centro_poblado?.centro_provincia;
     const centro_distrito = infoAll?.centro_poblado?.centro_distrito;
@@ -270,7 +268,11 @@ const Monitoring = () => {
         Download
       </Button>
       <Spin spinning={load} tip={"...cargando"}>
-        {infoAll?.monitoring && (
+        {!infoAll && <span>Sin datos</span>}
+        {infoAll?.monitoring && infoAll.monitoring.length == 0 && (
+          <span>Sin datos</span>
+        )}
+        {infoAll?.monitoring && infoAll.monitoring.length > 0 && (
           <div
             style={{
               display: "flex",
@@ -280,7 +282,6 @@ const Monitoring = () => {
               marginTop: 10,
             }}
           >
-            {!infoAll && <span>Sin datos</span>}
             <span>
               <strong>DNI: </strong>
               {infoAll?.gestor.gestor_dni}
@@ -298,24 +299,18 @@ const Monitoring = () => {
       </Spin>
       <Row>
         <Col xs={24} md={12}>
-          {!infoAll && <span>Sin datos</span>}
-          <Spin spinning={load} tip={"...cargando"}>
-            {infoAll?.monitoring && (
-              <CloroGlobalLine data={infoAll?.monitoring}></CloroGlobalLine>
-            )}
-          </Spin>
+          {infoAll?.monitoring && (
+            <CloroGlobalLine data={infoAll?.monitoring}></CloroGlobalLine>
+          )}
         </Col>
         <Col xs={24} md={12}>
-          {!infoAll && <span>Sin datos</span>}
-          <Spin spinning={load} tip={"...cargando"}>
-            {infoAll?.monitoring && (
-              <Table
-                dataSource={infoAll?.monitoring}
-                columns={columns}
-                rowKey="gestor_id"
-              />
-            )}
-          </Spin>
+          {infoAll?.monitoring && infoAll.monitoring.length > 0 && (
+            <Table
+              dataSource={infoAll?.monitoring}
+              columns={columns}
+              rowKey="gestor_id"
+            />
+          )}
         </Col>
       </Row>
     </div>

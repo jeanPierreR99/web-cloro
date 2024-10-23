@@ -61,9 +61,7 @@ const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
       dataIndex: "centro_enMeta",
       key: "enMeta",
       render: (enMeta: boolean) => (
-        <Tag color={enMeta ? "green" : "red"}>
-          {enMeta ? "En Meta" : "No"}
-        </Tag>
+        <Tag color={enMeta ? "green" : "red"}>{enMeta ? "En Meta" : "No"}</Tag>
       ),
     },
     {

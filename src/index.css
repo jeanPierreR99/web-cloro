@@ -283,3 +283,6 @@
 .hover-edit:hover {
   background: rgb(237, 237, 242);
 }
+.row-red{
+  color: rgb(241, 108, 108);
+}

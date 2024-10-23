@@ -146,9 +146,11 @@ const TableGestor: React.FC<GestorTableProps> = ({
   const menu = (gestor: Gestor) => (
     <Menu>
       <Space direction="vertical" style={{ textAlign: "center" }}>
-        <p className="hover-edit" onClick={() => handleEdit(gestor)}>
-          Editar
-        </p>
+        {gestor.gestor_status && (
+          <p className="hover-edit" onClick={() => handleEdit(gestor)}>
+            Editar
+          </p>
+        )}
         <p
           className="hover-edit"
           onClick={() => handleInfo(gestor.gestor_id, gestor.id_centro_poblado)}
@@ -163,13 +165,15 @@ const TableGestor: React.FC<GestorTableProps> = ({
         >
           Monitoreo
         </p>
-        <Popconfirm
-          title={`Seguro que queire dar de baja`}
-          description={`${gestor.gestor_name_complete}`}
-          onConfirm={() => confirm(gestor.gestor_id)}
-        >
-          <p className="hover-delete">Eliminar</p>
-        </Popconfirm>
+        {gestor.gestor_status && (
+          <Popconfirm
+            title={`Seguro que queire dar de baja`}
+            description={`${gestor.gestor_name_complete}`}
+            onConfirm={() => confirm(gestor.gestor_id)}
+          >
+            <p className="hover-delete">Eliminar</p>
+          </Popconfirm>
+        )}
       </Space>
     </Menu>
   );
@@ -230,11 +234,21 @@ const TableGestor: React.FC<GestorTableProps> = ({
     },
   ];
 
+  // Función para determinar la clase de la fila
+  const rowClassName = (record: Gestor) => {
+    return record.gestor_status ? "" : "row-red"; // Cambia 'row-red' según tu condición
+  };
+
   return (
     <>
       <p style={{ fontWeight: 700, marginBottom: 10 }}>GESTORES</p>
       <Spin spinning={loading} tip="Cargando...">
-        <Table dataSource={gestores} columns={columns} rowKey="gestor_id" />
+        <Table
+          dataSource={gestores}
+          columns={columns}
+          rowKey="gestor_id"
+          rowClassName={rowClassName}
+        />
       </Spin>
       {/* Modal para editar gestor */}
       <Modal
