@@ -30,6 +30,7 @@ const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
       title: "Id",
       dataIndex: "centro_id",
       key: "id",
+      render: (data: string) => <Tag color="blue">{data}</Tag>,
     },
     {
       title: "Nombre",
@@ -47,21 +48,23 @@ const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
       key: "distrito",
     },
     {
-      title: "Latitud",
-      dataIndex: "centro_latitud",
-      key: "latitud",
-    },
-    {
-      title: "Longitud",
-      dataIndex: "centro_longitud",
-      key: "longitud",
+      title: "Estado",
+      dataIndex: "centro_status",
+      key: "centro_status",
+      render: (text: boolean) => (
+        <Tag color={text ? "green" : "red"}>
+          {text ? "Con Gestor" : "Sin Gestor"}
+        </Tag>
+      ),
     },
     {
       title: "Meta Fed",
       dataIndex: "centro_enMeta",
       key: "enMeta",
       render: (enMeta: boolean) => (
-        <Tag color={enMeta ? "green" : "red"}>{enMeta ? "En Meta" : "No"}</Tag>
+        <Tag style={{ fontSize: "12px" }} color={enMeta ? "green" : "red"}>
+          {enMeta ? "En Meta" : "No"}
+        </Tag>
       ),
     },
     {
@@ -69,7 +72,11 @@ const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
       key: "acciones",
       render: (_text: any, record: CentroPoblado) => (
         <Space size="middle">
-          <Button icon={<EyeOutlined />} onClick={() => onEdit(record)}>
+          <Button
+            icon={<EyeOutlined />}
+            style={{ fontSize: "12px" }}
+            onClick={() => onEdit(record)}
+          >
             Ver/Editar
           </Button>
         </Space>
@@ -79,7 +86,12 @@ const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
 
   return (
     <Spin spinning={loading} tip="Cargando...">
-      <Table dataSource={centros} columns={columns} rowKey="id" />
+      <Table
+        dataSource={centros}
+        columns={columns}
+        scroll={{ x: "min-content" }}
+        rowKey="id"
+      />
     </Spin>
   );
 };

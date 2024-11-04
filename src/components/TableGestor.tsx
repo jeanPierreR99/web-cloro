@@ -10,7 +10,6 @@ import {
   Spin,
   Dropdown,
   Menu,
-  Space,
   Popconfirm,
 } from "antd";
 import { centrosProp } from "../page/admin/PopulateCenter";
@@ -145,19 +144,25 @@ const TableGestor: React.FC<GestorTableProps> = ({
 
   const menu = (gestor: Gestor) => (
     <Menu>
-      <Space direction="vertical" style={{ textAlign: "center" }}>
+      <div>
         {gestor.gestor_status && (
-          <p className="hover-edit" onClick={() => handleEdit(gestor)}>
+          <p
+            style={{ margin: 2 }}
+            className="hover-edit"
+            onClick={() => handleEdit(gestor)}
+          >
             Editar
           </p>
         )}
         <p
+          style={{ margin: 2 }}
           className="hover-edit"
           onClick={() => handleInfo(gestor.gestor_id, gestor.id_centro_poblado)}
         >
           Información
         </p>
         <p
+          style={{ margin: 2 }}
           className="hover-edit"
           onClick={() =>
             handleMonitor(gestor.gestor_id, gestor.id_centro_poblado)
@@ -174,7 +179,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
             <p className="hover-delete">Eliminar</p>
           </Popconfirm>
         )}
-      </Space>
+      </div>
     </Menu>
   );
   const handleEditSubmit = (values: any) => {
@@ -234,9 +239,8 @@ const TableGestor: React.FC<GestorTableProps> = ({
     },
   ];
 
-  // Función para determinar la clase de la fila
   const rowClassName = (record: Gestor) => {
-    return record.gestor_status ? "" : "row-red"; // Cambia 'row-red' según tu condición
+    return record.gestor_status ? "" : "row-red";
   };
 
   return (
@@ -248,9 +252,9 @@ const TableGestor: React.FC<GestorTableProps> = ({
           columns={columns}
           rowKey="gestor_id"
           rowClassName={rowClassName}
+          scroll={{ x: "min-content" }}
         />
       </Spin>
-      {/* Modal para editar gestor */}
       <Modal
         title="Editar Gestor"
         visible={isEditModalVisible}

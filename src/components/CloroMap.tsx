@@ -11,6 +11,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import appFirebase from "../js/credentials";
+import PING from "../assets/pin.png";
 const db = getFirestore(appFirebase);
 
 const areas: any = [
@@ -42,8 +43,7 @@ const MapView = () => {
 
 const CloroDashboard = ({ centros }: any) => {
   const customIcon = new L.Icon({
-    iconUrl:
-      "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes-thumbnail.png", // Reemplaza con la ruta a tu ícono
+    iconUrl: PING,
     iconSize: [50, 50],
     iconAnchor: [12, 41],
   });
@@ -53,7 +53,7 @@ const CloroDashboard = ({ centros }: any) => {
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <MapView />
       {areas.map((area: any) => (
-        <Polygon key={area.name} positions={area.coordinates}>
+        <Polygon fillColor="#888" key={area.name} positions={area.coordinates}>
           <Popup>{area.name}</Popup>
         </Polygon>
       ))}

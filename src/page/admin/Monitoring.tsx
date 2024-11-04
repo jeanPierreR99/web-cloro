@@ -265,7 +265,7 @@ const Monitoring = () => {
         icon={<DownloadOutlined />}
         size={"middle"}
       >
-        Download
+        Descargar
       </Button>
       <Spin spinning={load} tip={"...cargando"}>
         {!infoAll && <span>Sin datos</span>}
@@ -308,6 +308,7 @@ const Monitoring = () => {
             <Table
               dataSource={infoAll?.monitoring}
               columns={columns}
+              scroll={{ x: "min-content" }}
               rowKey="gestor_id"
             />
           )}
