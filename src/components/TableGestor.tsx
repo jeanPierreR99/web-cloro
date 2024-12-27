@@ -24,8 +24,8 @@ import {
   where,
 } from "firebase/firestore";
 import appFirebase from "../js/credentials";
-import CloroLineChart from "./CloroLineChart";
-import CloroRadarChart from "./CloroRadarChart";
+import TableMonitor from "./TableMonitor";
+import DualChart from "./DualChart";
 const db = getFirestore(appFirebase);
 
 export interface Gestor {
@@ -105,7 +105,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
       const userQuery = query(
         collection(db, "monitor_cloro"),
         where("monitor_cloro_gestor_id", "==", gestorId),
-        where("monitor_cloro_populate_center_id", "==", centroId)
+        where("monitor_cloro_populate_center_id", "==", centroId),
       );
 
       const querySnapshot = await getDocs(userQuery);
@@ -115,6 +115,13 @@ const TableGestor: React.FC<GestorTableProps> = ({
         const docData = doc.data();
         filteredDocs.push({ ...docData });
       });
+
+      filteredDocs.sort((a: any, b: any) => {
+        const dateA = a.monitor_cloro_date.split('/').reverse().join('-'); // Convierte DD/MM/YYYY a YYYY-MM-DD
+        const dateB = b.monitor_cloro_date.split('/').reverse().join('-');
+        return dateB.localeCompare(dateA); // Orden descendente
+      });
+
       setLoadByMonitor(false);
       setMonitorGestor(filteredDocs);
     } catch (error) {
@@ -123,10 +130,14 @@ const TableGestor: React.FC<GestorTableProps> = ({
     }
   };
 
-  const confirm = async (gestorId: any) => {
+  const confirm = async (gestorId: string, centroId: string) => {
     try {
       const docRefGestor = doc(db, "gestores", gestorId);
       await updateDoc(docRefGestor, { gestor_status: false });
+
+      const docRefCenter = doc(db, "centros_poblados", centroId);
+      await updateDoc(docRefCenter, { centro_status: false });
+
       notification.success({
         message: "Dado de baja",
         description: `El gestor ha sido dado de baja`,
@@ -174,7 +185,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
           <Popconfirm
             title={`Seguro que queire dar de baja`}
             description={`${gestor.gestor_name_complete}`}
-            onConfirm={() => confirm(gestor.gestor_id)}
+            onConfirm={() => confirm(gestor.gestor_id, gestor.id_centro_poblado)}
           >
             <p className="hover-delete">Eliminar</p>
           </Popconfirm>
@@ -419,10 +430,14 @@ const TableGestor: React.FC<GestorTableProps> = ({
         visible={isMonitorModalVisible}
         onCancel={() => setIsMonitorModalVisible(false)}
         footer={null}
+        width={"80%"}
       >
         <Spin spinning={loadByMonitor} tip={"...cargando"}>
-          <CloroLineChart monitorGestor={monitorGestor}></CloroLineChart>
-          <CloroRadarChart monitorGestor={monitorGestor}></CloroRadarChart>
+          {
+            monitorGestor && monitorGestor.length == 0 && <span>Sin datos ....</span>
+          }
+          <DualChart monitorGestor={monitorGestor}></DualChart>
+          <TableMonitor monitorGestor={monitorGestor}></TableMonitor>
         </Spin>
       </Modal>
     </>

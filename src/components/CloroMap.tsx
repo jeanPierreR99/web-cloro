@@ -49,12 +49,12 @@ const CloroDashboard = ({ centros }: any) => {
   });
 
   return (
-    <MapContainer style={{ height: "100%", width: "100%" }}>
+    <MapContainer style={{ height: "90%", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <MapView />
       {areas.map((area: any) => (
         <Polygon fillColor="#888" key={area.name} positions={area.coordinates}>
-          <Popup>{area.name}</Popup>
+          {/* <Popup>{area.name}</Popup> */}
         </Polygon>
       ))}
       {centros &&

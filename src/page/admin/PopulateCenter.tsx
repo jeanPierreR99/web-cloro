@@ -95,7 +95,7 @@ const PopulateCenter: React.FC = () => {
         val_cloro: 0.0,
       };
 
-      const dbRefAuxiliar = ref(database, `monitor_auxiliar/${client_id}`); // Usar la marca de tiempo como ID único
+      const dbRefAuxiliar = ref(database, `monitor_auxiliar/${client_id}`);
 
       await set(dbRefAuxiliar, objAuxiliar);
 
@@ -121,15 +121,7 @@ const PopulateCenter: React.FC = () => {
 
   const handleProvinciaChange = (value: string) => {
     setSelectedProvincia(value);
-    form.setFieldsValue({ distrito: null }); // Resetea el valor del distrito
-  };
-
-  const handleEditCentro = (updatedCentro: any) => {
-    setCentros((prevCentro) =>
-      prevCentro.map((centro) =>
-        centro.client_id === updatedCentro.client_id ? updatedCentro : centro
-      )
-    );
+    form.setFieldsValue({ distrito: null });
   };
 
   useEffect(() => {
@@ -156,7 +148,6 @@ const PopulateCenter: React.FC = () => {
 
         <TablePopulateCenter
           centros={centros}
-          onEdit={handleEditCentro}
           loading={isLoading}
         ></TablePopulateCenter>
         <Modal

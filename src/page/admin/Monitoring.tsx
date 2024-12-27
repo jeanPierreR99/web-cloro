@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-import CloroGlobalLine from "../../components/CloroGlobalLine";
-import { Button, Col, Row, Select, Spin, Table, Tag } from "antd";
+import { Button, Select, Spin, Table, Tag } from "antd";
 import {
   collection,
   doc,
@@ -15,6 +14,7 @@ import appFirebase from "../../js/credentials";
 import { DownloadOutlined } from "@ant-design/icons";
 import { Gestor } from "../../components/TableGestor";
 import { CentroPoblado } from "../../components/TablePopulateCenter";
+import ScatterChart from "../../components/ScatterChart";
 const db = getFirestore(appFirebase);
 const { Option } = Select;
 
@@ -93,12 +93,17 @@ const Monitoring = () => {
           allCenter.push({ ...docData });
         });
 
+        allMonitoring.sort((a: any, b: any) => {
+          const dateA = a.monitor_cloro_date.split('/').reverse().join('-'); // Convierte DD/MM/YYYY a YYYY-MM-DD
+          const dateB = b.monitor_cloro_date.split('/').reverse().join('-');
+          return dateB.localeCompare(dateA); // Orden descendente
+        });
+
         const infoAll: MonitorCloroUserCenter = {
           monitoring: allMonitoring as MonitorCLoro[],
           gestor: allGestor as Gestor,
           centro_poblado: allCenter as CentroPoblado,
         };
-        console.log(infoAll);
         setLoad(false);
         setInfoAll(infoAll);
       } catch (error) {
@@ -141,12 +146,17 @@ const Monitoring = () => {
 
       const centroData = centroSnap.data();
 
+      filterMonitoring.sort((a: any, b: any) => {
+        const dateA = a.monitor_cloro_date.split('/').reverse().join('-'); // Convierte DD/MM/YYYY a YYYY-MM-DD
+        const dateB = b.monitor_cloro_date.split('/').reverse().join('-');
+        return dateB.localeCompare(dateA); // Orden descendente
+      });
+
       const infoAll: MonitorCloroUserCenter = {
         monitoring: filterMonitoring as MonitorCLoro[],
         gestor: gestorData as Gestor,
         centro_poblado: centroData as CentroPoblado,
       };
-      console.log(infoAll);
       setLoad(false);
       setInfoAll(infoAll);
     } catch (error) {
@@ -224,14 +234,14 @@ const Monitoring = () => {
       key: "monitor_cloro_punto",
     },
     {
-      title: "Observaciones",
-      dataIndex: "monitor_cloro_observaciones",
-      key: "monitor_cloro_observaciones",
-    },
-    {
       title: "Periodo",
       dataIndex: "monitor_cloro_tipo",
       key: "monitor_cloro_tipo",
+    },
+    {
+      title: "Observaciones",
+      dataIndex: "monitor_cloro_observaciones",
+      key: "monitor_cloro_observaciones",
     },
   ];
 
@@ -297,23 +307,19 @@ const Monitoring = () => {
           </div>
         )}
       </Spin>
-      <Row>
-        <Col xs={24} md={12}>
-          {infoAll?.monitoring && (
-            <CloroGlobalLine data={infoAll?.monitoring}></CloroGlobalLine>
-          )}
-        </Col>
-        <Col xs={24} md={12}>
-          {infoAll?.monitoring && infoAll.monitoring.length > 0 && (
-            <Table
-              dataSource={infoAll?.monitoring}
-              columns={columns}
-              scroll={{ x: "min-content" }}
-              rowKey="gestor_id"
-            />
-          )}
-        </Col>
-      </Row>
+      <div>
+        {infoAll?.monitoring && (
+          <ScatterChart data={infoAll?.monitoring}></ScatterChart>
+        )}
+        {infoAll?.monitoring && infoAll.monitoring.length > 0 && (
+          <Table
+            dataSource={infoAll?.monitoring}
+            columns={columns}
+            scroll={{ x: "min-content" }}
+            rowKey="gestor_id"
+          />
+        )}
+      </div>
     </div>
   );
 };

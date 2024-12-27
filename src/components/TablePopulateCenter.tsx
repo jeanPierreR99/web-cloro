@@ -1,8 +1,7 @@
 // CentroPobladoTable.tsx
 
 import React from "react";
-import { Table, Button, Space, Tag, Spin } from "antd";
-import { EyeOutlined } from "@ant-design/icons";
+import { Table, Tag, Spin } from "antd";
 
 export interface CentroPoblado {
   centro_id: number;
@@ -16,13 +15,11 @@ export interface CentroPoblado {
 
 interface CentroPobladoTableProps {
   centros: CentroPoblado[];
-  onEdit: (centro: CentroPoblado) => void;
   loading: boolean;
 }
 
 const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
   centros,
-  onEdit,
   loading,
 }) => {
   const columns = [
@@ -65,21 +62,6 @@ const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
         <Tag style={{ fontSize: "12px" }} color={enMeta ? "green" : "red"}>
           {enMeta ? "En Meta" : "No"}
         </Tag>
-      ),
-    },
-    {
-      title: "Acciones",
-      key: "acciones",
-      render: (_text: any, record: CentroPoblado) => (
-        <Space size="middle">
-          <Button
-            icon={<EyeOutlined />}
-            style={{ fontSize: "12px" }}
-            onClick={() => onEdit(record)}
-          >
-            Ver/Editar
-          </Button>
-        </Space>
       ),
     },
   ];
