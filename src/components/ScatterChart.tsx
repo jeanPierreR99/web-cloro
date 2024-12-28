@@ -1,29 +1,40 @@
 import { Scatter } from '@ant-design/plots';
 
 const ScatterChart = ({ data }: any) => {
+    // Calcular la frecuencia de cada combinación de valores
+    const processedData = data.map((item: any) => {
+        const frequency = data.filter(
+            (d: any) =>
+                d.monitor_cloro_punto === item.monitor_cloro_punto &&
+                d.monitor_cloro_value === item.monitor_cloro_value
+        ).length;
 
-    console.log(data)
+        return { ...item, frequency };
+    });
+
+    console.log(processedData);
+
     const config = {
-        paddingLeft: 60,
-        data: data,
+        data: processedData,
         xField: "monitor_cloro_punto",
-        yField: 'monitor_cloro_value',
-        colorField: 'monitor_cloro_value',
-        shapeField: 'point',
-        style: {
-            stroke: '#000',
-            strokeOpacity: 0.2,
-        },
+        yField: "monitor_cloro_value",
+        sizeField: "frequency", // Cambiar tamaño según la frecuencia
+        shape: 'circle',
+        colorField: 'frequency',
         scale: {
+            size: { type: 'log', range: [5, 25] },
             color: {
-                palette: 'rdBu',
-                offset: (t: any) => 1 - t,
+                palette: 'gnBu',
+                offset: (t: any) => t,
             },
+          },
+        style: {
+            stroke: 'gray',
+            lineWidth: 1,
         },
-        // tooltip: [{ channel: 'x', name: 'year', valueFormatter: (d: any) => d.getFullYear() }, { channel: 'y' }],
-        // annotations: [{ type: 'lineY', data: [0], style: { stroke: '#000', strokeOpacity: 0.2 } }],
     };
+
     return <Scatter {...config} />;
 };
 
-export default ScatterChart
+export default ScatterChart;

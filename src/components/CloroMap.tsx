@@ -9,11 +9,12 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import appFirebase from "../js/credentials";
 import PING from "../assets/pin.png";
+import { Select } from "antd";
 const db = getFirestore(appFirebase);
-
+const { Option } = Select;
 const areas: any = [
   {
     name: "MADRE DE DIOS",
@@ -31,17 +32,18 @@ const areas: any = [
   },
 ];
 
-const MapView = () => {
+const MapView = ({ coor }: any) => {
   const map = useMap();
+  const coorSplit = coor.split(",");
 
   useEffect(() => {
-    map.setView([-12.5862, -70.241], 6);
-  }, [map]);
+    map.setView([coorSplit[0], coorSplit[1]], coorSplit[2]);
+  }, [map, coor]);
 
   return null;
 };
 
-const CloroDashboard = ({ centros }: any) => {
+const CloroDashboard = ({ centros, coor }: any) => {
   const customIcon = new L.Icon({
     iconUrl: PING,
     iconSize: [50, 50],
@@ -51,7 +53,7 @@ const CloroDashboard = ({ centros }: any) => {
   return (
     <MapContainer style={{ height: "90%", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <MapView />
+      <MapView coor={coor} />
       {areas.map((area: any) => (
         <Polygon fillColor="#888" key={area.name} positions={area.coordinates}>
           {/* <Popup>{area.name}</Popup> */}
@@ -88,6 +90,8 @@ const CloroDashboard = ({ centros }: any) => {
 
 const CloroMap = () => {
   const [data, setData] = useState<any[]>([]);
+  const [centros, setCentros] = useState<any[]>([]);
+  const [selected, setSected] = useState<any>("-11.8137652,-71.1348947, 7");
 
   const fectchGestores = async () => {
     const dataGestores: any = [];
@@ -106,12 +110,16 @@ const CloroMap = () => {
   const fetchCenters = async () => {
     const dataCentros: any = [];
     try {
-      const querySnapshot = await getDocs(collection(db, "centros_poblados"));
-      querySnapshot.docs.forEach((doc) => {
+      const centrosRef = collection(db, "centros_poblados");
+      const q = query(centrosRef, where("centro_status", "==", true));
+
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
         dataCentros.push(doc.data());
       });
 
-      return await dataCentros;
+      return dataCentros;
     } catch (error) {
       console.error("Error al obtener datos: ", error);
     }
@@ -121,6 +129,8 @@ const CloroMap = () => {
     const centers = await fetchCenters();
     const gestors = await fectchGestores();
 
+    setCentros(centers);
+    
     var dataArray: any[] = [];
     gestors.forEach((data: any) => {
       centers.forEach((element: any) => {
@@ -144,8 +154,22 @@ const CloroMap = () => {
 
   return (
     <div style={{ width: "100%" }}>
-      <h1>Madre de Dios</h1>
-      <CloroDashboard centros={data} />
+      <Select
+        placeholder="Centro Poblado"
+        onChange={(value) => {
+          setSected(value);
+        }}
+        style={{ width: "220px" }}
+      >
+        {centros.map((data, index) => (
+          <Option key={index} value={`${data.centro_latitud},${data.centro_longitud}, 14`}>
+            {data.centro_nombre}
+          </Option>
+        ))}
+        <Option value="-11.8137652,-71.1348947, 7">Madre de dios</Option>
+      </Select>
+      <br /><br />
+      <CloroDashboard centros={data} coor={selected} />
     </div>
   );
 };

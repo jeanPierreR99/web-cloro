@@ -179,7 +179,7 @@ const User = () => {
           onClick={() => setIsAddModalVisible(true)}
           style={{ marginBottom: 16 }}
         >
-          Agregar Gestor
+          Agregar
         </Button>
 
         <TableGestor

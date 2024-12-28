@@ -143,7 +143,7 @@ const PopulateCenter: React.FC = () => {
           onClick={() => setIsAddModalVisible(true)}
           style={{ marginBottom: 16 }}
         >
-          Agregar Centro Poblado
+          Agregar
         </Button>
 
         <TablePopulateCenter
