@@ -292,17 +292,20 @@ const Monitoring = () => {
               marginTop: 10,
             }}
           >
+            <span style={{ color: "gray" }}>
+              Ultimo Gestor
+            </span>
             <span>
               <strong>DNI: </strong>
-              {infoAll?.gestor.gestor_dni}
+              {infoAll?.gestor.gestor_dni || "No cuenta"}
             </span>
             <span>
               <strong>Gestor: </strong>
-              {infoAll?.gestor.gestor_name_complete}
+              {infoAll?.gestor.gestor_name_complete || "No cuenta"}
             </span>
             <span>
               <strong>Telefono: </strong>
-              {infoAll?.gestor.gestor_phone}
+              {infoAll?.gestor.gestor_phone || "No cuenta"}
             </span>
           </div>
         )}

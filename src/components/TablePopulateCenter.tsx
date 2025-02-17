@@ -68,6 +68,7 @@ const TablePopulateCenter: React.FC<CentroPobladoTableProps> = ({
 
   return (
     <Spin spinning={loading} tip="Cargando...">
+        <p style={{ fontWeight: 700, marginBottom: 10 }}>CENTROS POBLADOS</p>
       <Table
         dataSource={centros}
         columns={columns}

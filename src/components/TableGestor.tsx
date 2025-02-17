@@ -26,6 +26,7 @@ import {
 import appFirebase from "../js/credentials";
 import TableMonitor from "./TableMonitor";
 import DualChart from "./DualChart";
+import { MoreOutlined } from "@ant-design/icons";
 const db = getFirestore(appFirebase);
 
 export interface Gestor {
@@ -244,7 +245,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
           placement="bottomRight"
           arrow
         >
-          <Button>Menu</Button>
+          <MoreOutlined />
         </Dropdown>
       ),
     },
