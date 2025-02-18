@@ -48,13 +48,11 @@ interface InfoGestor {
 
 interface GestorTableProps {
   gestores: Gestor[];
-  onEdit: (gestor: Gestor) => void;
-  loading: boolean; // Nuevo prop para manejar el estado de carga
+  loading: boolean;
 }
 
 const TableGestor: React.FC<GestorTableProps> = ({
   gestores,
-  onEdit,
   loading,
 }) => {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -66,6 +64,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
   const [form] = Form.useForm();
   const [loadByMonitor, setLoadByMonitor] = useState(false);
   const [loadByEdit, setLoadByEdit] = useState(false);
+  const [loadEdit, setLoadEdit] = useState<boolean>(false);
 
   const handleEdit = (gestor: Gestor) => {
     setEditingGestor(gestor);
@@ -194,15 +193,32 @@ const TableGestor: React.FC<GestorTableProps> = ({
       </div>
     </Menu>
   );
-  const handleEditSubmit = (values: any) => {
+  const handleEditSubmit = async (values: any) => {
     if (editingGestor) {
-      onEdit({ ...editingGestor, ...values });
-      setIsEditModalVisible(false);
-      notification.success({
-        message: "Gestor Editado",
-        description: `El gestor ${values.gestor_name_complete} ha sido editado con éxito.`,
-        placement: "top",
-      });
+      setLoadEdit(true)
+      try {
+        const docRefGestor = doc(db, "gestores", editingGestor.gestor_id);
+        await updateDoc(docRefGestor, {
+          gestor_phone: values.gestor_phone,
+          gestor_user: values.gestor_user,
+          gestor_password: values.gestor_password,
+        });
+        notification.success({
+          message: "Gestor Editado",
+          description: `El gestor ${values.gestor_name_complete} ha sido editado con éxito.`,
+          placement: "top",
+        });
+
+        setIsEditModalVisible(false);
+      } catch (error) {
+        notification.error({
+          message: "Ocurrio un error",
+          description: `NO se pudo edita error: ${error}`,
+          placement: "top",
+        });
+      } finally {
+        setLoadEdit(false)
+      }
     }
   };
 
@@ -284,7 +300,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
               },
             ]}
           >
-            <Input />
+            <Input disabled />
           </Form.Item>
 
           <Form.Item
@@ -316,11 +332,13 @@ const TableGestor: React.FC<GestorTableProps> = ({
             <Input.Password />
           </Form.Item>
 
-          <Form.Item>
+          <Spin spinning={loadEdit}>
             <Button type="primary" htmlType="submit" block>
               Guardar
             </Button>
-          </Form.Item>
+          </Spin>
+
+
         </Form>
       </Modal>
       {/* Modal para informacion gestor */}

@@ -134,14 +134,6 @@ const User = () => {
     }
   };
 
-  const handleEditGestor = (updatedGestor: any) => {
-    setGestores((prevGestores) =>
-      prevGestores.map((gestor) =>
-        gestor.client_id === updatedGestor.client_id ? updatedGestor : gestor
-      )
-    );
-  };
-
   const getNameByDNi = async (dni: string) => {
     try {
       if (dni.length >= 8) {
@@ -184,7 +176,6 @@ const User = () => {
 
         <TableGestor
           gestores={gestores}
-          onEdit={handleEditGestor}
           loading={isLoading}
         />
 
