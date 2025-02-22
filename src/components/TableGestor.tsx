@@ -11,6 +11,8 @@ import {
   Dropdown,
   Menu,
   Popconfirm,
+  InputNumber,
+  Avatar,
 } from "antd";
 import { centrosProp } from "../page/admin/PopulateCenter";
 import {
@@ -27,12 +29,14 @@ import appFirebase from "../js/credentials";
 import TableMonitor from "./TableMonitor";
 import DualChart from "./DualChart";
 import { MoreOutlined } from "@ant-design/icons";
+import Search from "antd/es/input/Search";
 const db = getFirestore(appFirebase);
 
 export interface Gestor {
   gestor_create_at: string;
   gestor_id: string;
   gestor_dni: string;
+  gestor_image: string;
   id_centro_poblado: string;
   gestor_name_complete: string;
   gestor_phone: string;
@@ -65,6 +69,13 @@ const TableGestor: React.FC<GestorTableProps> = ({
   const [loadByMonitor, setLoadByMonitor] = useState(false);
   const [loadByEdit, setLoadByEdit] = useState(false);
   const [loadEdit, setLoadEdit] = useState<boolean>(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filtrar los datos según el DNI
+  const filteredGestores = gestores.filter((gestor) =>
+    gestor.gestor_dni.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleEdit = (gestor: Gestor) => {
     setEditingGestor(gestor);
@@ -224,9 +235,22 @@ const TableGestor: React.FC<GestorTableProps> = ({
 
   const columns = [
     {
-      title: "Fecha de registro",
+      title: "F. Registro",
       dataIndex: "gestor_create_at",
       key: "gestor_create_at",
+    },
+    {
+      title: "DNI",
+      dataIndex: "gestor_dni",
+      key: "gestor_dni",
+    },
+    {
+      title: "Fotografia",
+      dataIndex: "gestor_image",
+      key: "gestor_image",
+      render: (data: string) => (
+        <Avatar src={data} size={55} />
+      ),
     },
     {
       title: "Nombre Completo",
@@ -237,11 +261,6 @@ const TableGestor: React.FC<GestorTableProps> = ({
       title: "Teléfono",
       dataIndex: "gestor_phone",
       key: "gestor_phone",
-    },
-    {
-      title: "Usuario",
-      dataIndex: "gestor_user",
-      key: "gestor_user",
     },
     {
       title: "Estado",
@@ -275,8 +294,14 @@ const TableGestor: React.FC<GestorTableProps> = ({
     <>
       <p style={{ fontWeight: 700, marginBottom: 10 }}>GESTORES</p>
       <Spin spinning={loading} tip="Cargando...">
+        <Search
+          placeholder="Buscar por DNI"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ maxWidth: 250, marginBottom: 16 }}
+          allowClear
+        />
         <Table
-          dataSource={gestores}
+          dataSource={filteredGestores}
           columns={columns}
           rowKey="gestor_id"
           rowClassName={rowClassName}
@@ -310,7 +335,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
               { required: true, message: "Por favor ingrese el teléfono" },
             ]}
           >
-            <Input />
+            <InputNumber />
           </Form.Item>
           <Form.Item
             name="gestor_user"

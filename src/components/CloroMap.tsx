@@ -12,7 +12,7 @@ import L from "leaflet";
 import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import appFirebase from "../js/credentials";
 import PING from "../assets/pin.png";
-import { Select } from "antd";
+import { Avatar, Select } from "antd";
 const db = getFirestore(appFirebase);
 const { Option } = Select;
 const areas: any = [
@@ -44,11 +44,6 @@ const MapView = ({ coor }: any) => {
 };
 
 const CloroDashboard = ({ centros, coor }: any) => {
-  const customIcon = new L.Icon({
-    iconUrl: PING,
-    iconSize: [50, 50],
-    iconAnchor: [12, 41],
-  });
 
   return (
     <MapContainer style={{ height: "90%", width: "100%" }}>
@@ -60,30 +55,39 @@ const CloroDashboard = ({ centros, coor }: any) => {
         </Polygon>
       ))}
       {centros &&
-        centros.map((data: any, index: any) => (
-          <Marker
-            key={index}
-            position={[
-              parseFloat(data.centro_latitude),
-              parseFloat(data.centro_longitud),
-            ]}
-            icon={customIcon}
-          >
-            <Popup>
-              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <span>
-                  <strong>Centro poblado:</strong> {data.centro_name}
-                </span>
-                <span>
-                  <strong>Gestor:</strong> {data.gestor_name}
-                </span>
-                <span>
-                  <strong>DNI:</strong> {data.gestor_dni}
-                </span>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        centros.map((data: any, index: any) => {
+          const customIcon = new L.Icon({
+            iconUrl: data.gestor_image || PING,
+            iconSize: [50, 50],
+            iconAnchor: [12, 41],
+            className: "rounded-icon",
+          });
+          return (
+            <Marker
+              key={index}
+              position={[
+                parseFloat(data.centro_latitude),
+                parseFloat(data.centro_longitud),
+              ]}
+              icon={customIcon}
+            >
+              <Popup>
+                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  <Avatar src={data.gestor_image} size={55} />
+                  <span>
+                    <strong>Centro poblado:</strong> {data.centro_name}
+                  </span>
+                  <span>
+                    <strong>Gestor:</strong> {data.gestor_name}
+                  </span>
+                  <span>
+                    <strong>DNI:</strong> {data.gestor_dni}
+                  </span>
+                </div>
+              </Popup>
+            </Marker>
+          )
+        })}
     </MapContainer>
   );
 };
@@ -130,7 +134,7 @@ const CloroMap = () => {
     const gestors = await fectchGestores();
 
     setCentros(centers);
-    
+
     var dataArray: any[] = [];
     gestors.forEach((data: any) => {
       centers.forEach((element: any) => {
@@ -141,6 +145,7 @@ const CloroMap = () => {
             centro_longitud: element.centro_longitud,
             gestor_name: data.gestor_name_complete,
             gestor_dni: data.gestor_dni,
+            gestor_image: data.gestor_image,
           });
         }
       });

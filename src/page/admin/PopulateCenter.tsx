@@ -49,7 +49,7 @@ const PopulateCenter: React.FC = () => {
   const [centros, setCentros] = useState<any[]>([]);
   const [form] = Form.useForm();
   const [selectedProvincia, setSelectedProvincia] = useState<string | null>(
-    null
+    null,
   );
 
   const provincias: any = {
@@ -70,7 +70,7 @@ const PopulateCenter: React.FC = () => {
 
           setCentros(dataCentros);
           setIsLoading(false);
-        }
+        },
       );
 
       return unsubscribe;

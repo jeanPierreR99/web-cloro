@@ -242,6 +242,9 @@ const Monitoring = () => {
       title: "Observaciones",
       dataIndex: "monitor_cloro_observaciones",
       key: "monitor_cloro_observaciones",
+      render: (data: string) => (
+        <a>{data}</a>
+      )
     },
   ];
 

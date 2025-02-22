@@ -89,3 +89,6 @@
   align-items: center;
   height: 100vh; /* Ocupa toda la altura de la ventana */
 }
+.rounded-icon{
+  border-radius: 100%;
+}

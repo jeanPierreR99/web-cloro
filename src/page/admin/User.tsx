@@ -1,5 +1,3 @@
-// ManageGestores.tsx
-
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -10,14 +8,17 @@ import {
   notification,
   Select,
   Spin,
+  Upload,
+  Avatar,
 } from "antd";
 import TableGestor from "../../components/TableGestor";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   collection,
   doc,
   getFirestore,
   onSnapshot,
+  orderBy,
   query,
   setDoc,
   updateDoc,
@@ -26,6 +27,9 @@ import {
 import appFirebase from "../../js/credentials";
 import axios from "axios";
 const db = getFirestore(appFirebase);
+const storage = getStorage(appFirebase);
+import { ref, uploadBytes, getDownloadURL, getStorage } from "firebase/storage";
+
 const { Option } = Select;
 const { Search } = Input;
 
@@ -38,6 +42,7 @@ interface gestoresProp {
   gestor_user: string;
   gestor_password: string;
   gestor_status: boolean;
+  gestor_image: string;
 }
 
 function getDate() {
@@ -60,7 +65,7 @@ const User = () => {
     try {
       const q = query(
         collection(db, "centros_poblados"),
-        where("centro_status", "==", false)
+        where("centro_status", "==", false),
       );
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -80,7 +85,9 @@ const User = () => {
 
   const fetchGestores = () => {
     try {
-      const unsubscribe = onSnapshot(collection(db, "gestores"), (snapshot) => {
+      const q = query(collection(db, "gestores"), orderBy("gestor_create_at", "asc"));
+
+      const unsubscribe = onSnapshot(q, (snapshot) => {
         const dataGestores: any = [];
         snapshot.docs.forEach((doc) => {
           dataGestores.push(doc.data());
@@ -96,6 +103,34 @@ const User = () => {
     }
   };
 
+  const imageDefault: any = "https://firebasestorage.googleapis.com/v0/b/api-node-e6599.appspot.com/o/profiles%2Fperfil-empty.png?alt=media&token=381ba653-57fd-4586-9fe0-deb24c624faa"
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const beforeUpload = (file: File) => {
+    const isImage = file.type.startsWith("image/");
+    if (!isImage) {
+      notification.warning({
+        message: "Alerta",
+        description: "Solo puedes subir imágenes",
+        placement: "top",
+      });
+    }
+    return isImage || Upload.LIST_IGNORE;
+  };
+
+  const handleFileChange = (info: any) => {
+    const file = info.file.originFileObj;
+    if (file) {
+      setFile(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewUrl(reader.result as string)
+      }
+      reader.readAsDataURL(file);
+    }
+  };
+
   const addData = async (values: gestoresProp) => {
     try {
       setLoaddAdd(true);
@@ -106,15 +141,25 @@ const User = () => {
       values.gestor_id = client_id;
       values.gestor_status = true;
 
+      let imageUrl;
+      if (file) {
+        imageUrl = await uploadFile(file);
+        values.gestor_image = imageUrl as string;
+      }
+      else {
+        values.gestor_image = imageDefault;
+      }
+
       const docRefCentro = doc(
         db,
         "centros_poblados",
-        values.id_centro_poblado
+        values.id_centro_poblado,
       );
       await setDoc(docRef, values);
       await updateDoc(docRefCentro, { centro_status: true });
-      form.resetFields();
 
+      form.resetFields();
+      setFile(null);
       setIsAddModalVisible(false);
 
       notification.success({
@@ -122,15 +167,32 @@ const User = () => {
         description: `El gestor ${values.gestor_name_complete} ha sido agregado con éxito.`,
         placement: "top",
       });
-      setLoaddAdd(false);
     } catch (error) {
       console.error("Error al agregar datos: ", error);
-      setLoaddAdd(false);
       notification.error({
         message: "Error",
         description: "No se pudo agregar el gestor.",
         placement: "top",
       });
+    } finally {
+      setLoaddAdd(false);
+    }
+  };
+
+  const uploadFile = async (file: File) => {
+    if (!file) return;
+
+    const storageRef = ref(storage, `profiles/${file.name}`);
+
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      console.log("Archivo subido:", snapshot);
+
+      const url = await getDownloadURL(storageRef);
+      console.log("URL del archivo:", url);
+      return url;
+    } catch (error) {
+      console.error("Error al subir el archivo:", error);
     }
   };
 
@@ -139,7 +201,7 @@ const User = () => {
       if (dni.length >= 8) {
         setLoadSearch(true);
         const handleData = await axios.get(
-          `https://api-dni-ruc.vercel.app/jp_api/reniec?dni=${dni}`
+          `https://api-dni-ruc.vercel.app/jp_api/reniec?dni=${dni}`,
         );
 
         form.setFieldsValue({ gestor_name_complete: handleData.data.nombre });
@@ -155,7 +217,6 @@ const User = () => {
     const unsubscribeGestores = fetchGestores();
     const unsubscribeCenters = fetchCenters();
     fetchCenters();
-
     return () => {
       if (unsubscribeGestores) unsubscribeGestores();
       if (unsubscribeCenters) unsubscribeCenters();
@@ -168,16 +229,17 @@ const User = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => setIsAddModalVisible(true)}
+          onClick={() => {
+            setIsAddModalVisible(true); form.resetFields();
+            file && setFile(null);
+            previewUrl && setPreviewUrl(null);
+          }}
           style={{ marginBottom: 16 }}
         >
           Agregar
         </Button>
 
-        <TableGestor
-          gestores={gestores}
-          loading={isLoading}
-        />
+        <TableGestor gestores={gestores} loading={isLoading} />
 
         <Modal
           title="Agregar Gestor"
@@ -189,30 +251,31 @@ const User = () => {
             <Form.Item
               name="gestor_dni"
               label="DNI"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor ingrese su DNI",
-                },
-              ]}
+              rules={[{ required: true, message: "Por favor ingrese su DNI" }]}
             >
               <Search
-                onChange={(e) => {
-                  getNameByDNi(e.target.value);
-                }}
+                onChange={(e) => getNameByDNi(e.target.value)}
                 loading={loadSearch}
                 placeholder="DNI"
               />
             </Form.Item>
+
+            <Form.Item label="Fotografía">
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", }}>
+                <Upload beforeUpload={beforeUpload} onChange={handleFileChange} showUploadList={false}>
+                  <Button icon={<UploadOutlined />}>Seleccionar Imagen</Button>
+                </Upload>
+                {previewUrl ? (
+                  <Avatar src={previewUrl} size={55} />
+                ) : (
+                  <Avatar src={imageDefault} size={55} />)}
+              </div>
+            </Form.Item>
+
             <Form.Item
               name="gestor_name_complete"
               label="Nombre Completo"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor ingrese el nombre completo",
-                },
-              ]}
+              rules={[{ required: true, message: "Por favor ingrese el nombre completo" }]}
             >
               <Input placeholder="Nombre completo del gestor" />
             </Form.Item>
@@ -220,12 +283,11 @@ const User = () => {
             <Form.Item
               name="gestor_phone"
               label="Teléfono"
-              rules={[
-                { required: true, message: "Por favor ingrese el teléfono" },
-              ]}
+              rules={[{ required: true, message: "Por favor ingrese el teléfono" }]}
             >
               <Input placeholder="Teléfono del gestor" />
             </Form.Item>
+
             <Form.Item
               name="id_centro_poblado"
               label="Centro Poblado"
@@ -239,12 +301,11 @@ const User = () => {
                 ))}
               </Select>
             </Form.Item>
+
             <Form.Item
               name="gestor_user"
               label="Usuario"
-              rules={[
-                { required: true, message: "Por favor ingrese el usuario" },
-              ]}
+              rules={[{ required: true, message: "Por favor ingrese el usuario" }]}
             >
               <Input placeholder="Usuario del gestor" />
             </Form.Item>
@@ -252,9 +313,7 @@ const User = () => {
             <Form.Item
               name="gestor_password"
               label="Contraseña"
-              rules={[
-                { required: true, message: "Por favor ingrese la contraseña" },
-              ]}
+              rules={[{ required: true, message: "Por favor ingrese la contraseña" }]}
             >
               <Input.Password placeholder="Contraseña del gestor" />
             </Form.Item>
@@ -269,7 +328,7 @@ const User = () => {
           </Form>
         </Modal>
       </Space>
-    </div>
+    </div >
   );
 };
 
