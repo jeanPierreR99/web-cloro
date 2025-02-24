@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-import { Button, Select, Spin, Table, Tag } from "antd";
+import { Button, Select, Spin, Table, Tag, Image } from "antd";
 import {
   collection,
   doc,
@@ -27,6 +27,7 @@ interface MonitorCLoro {
   monitor_cloro_punto: string;
   monitor_cloro_tipo: string;
   monitor_cloro_value: number;
+  monitor_cloro_images: any[];
 }
 
 interface MonitorCloroUserCenter {
@@ -105,6 +106,7 @@ const Monitoring = () => {
           centro_poblado: allCenter as CentroPoblado,
         };
         setLoad(false);
+        console.log(infoAll)
         setInfoAll(infoAll);
       } catch (error) {
         setInfoAll(null);
@@ -176,6 +178,7 @@ const Monitoring = () => {
     const centro_longitud = infoAll?.centro_poblado.centro_longitud;
     const metaFed = infoAll?.centro_poblado.centro_enMeta;
 
+
     const monitoringData = infoAll?.monitoring;
 
     const excelData: any[] = [];
@@ -243,9 +246,27 @@ const Monitoring = () => {
       dataIndex: "monitor_cloro_observaciones",
       key: "monitor_cloro_observaciones",
       render: (data: string) => (
-        <a>{data}</a>
+        <span style={{color: "red", opacity:.7}}>{data}</span>
       )
     },
+    {
+      title: "Capturas",
+      dataIndex: "monitor_cloro_images",
+      key: "monitor_cloro_images",
+      width: "200px",
+      render: (images: any[]) => (
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          {images?.map((img, index) => (
+            <Image
+              key={index}
+              src={img.monitor_cloro_image_url}
+              alt={`Captura ${index + 1}`}
+              style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
+            />
+          ))}
+        </div>
+      )
+    }
   ];
 
   useEffect(() => {

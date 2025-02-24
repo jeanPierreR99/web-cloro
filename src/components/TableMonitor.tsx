@@ -1,7 +1,6 @@
-import { Table, Tag } from "antd";
+import { Image, Table, Tag } from "antd";
 
 const TableMonitor = ({ monitorGestor }: any) => {
-
   const columns = [
     {
       title: "Fecha de registro",
@@ -31,9 +30,28 @@ const TableMonitor = ({ monitorGestor }: any) => {
       dataIndex: "monitor_cloro_observaciones",
       key: "monitor_cloro_observaciones",
       render: (data: string) => (
-        <a>{data}</a>
+        <span style={{color: "red", opacity:.7}}>{data}</span>
       )
     },
+    {
+      title: "Capturas",
+      dataIndex: "monitor_cloro_images",
+      key: "monitor_cloro_images",
+      width: "200px",
+      render: (images: any[]) => (
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+          {images?.map((img, index) => (
+            <Image
+              key={index}
+              src={img.monitor_cloro_image_url}
+              alt={`Captura ${index + 1}`}
+              style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
+            />
+          ))}
+        </div>
+      )
+    }
+
 
   ];
 
