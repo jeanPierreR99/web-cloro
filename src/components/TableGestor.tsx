@@ -335,7 +335,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
               { required: true, message: "Por favor ingrese el teléfono" },
             ]}
           >
-            <InputNumber />
+            <InputNumber style={{width:"100%"}} />
           </Form.Item>
           <Form.Item
             name="gestor_user"

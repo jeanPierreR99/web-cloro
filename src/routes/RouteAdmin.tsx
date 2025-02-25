@@ -138,6 +138,7 @@ function RouteAdmin() {
           }}
         >
           <Routes>
+          <Route path="/" element={<Home />} />
             <Route path="/admin" element={<Home />} />
             <Route path="/admin/user" element={<User />} />
             <Route path="/admin/monitoring" element={<Monitoring />} />

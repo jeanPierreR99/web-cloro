@@ -158,7 +158,7 @@ const CloroMap = () => {
   }, []);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "70%" }} className="map">
       <Select
         placeholder="Centro Poblado"
         onChange={(value) => {

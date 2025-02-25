@@ -92,3 +92,17 @@
 .rounded-icon{
   border-radius: 100%;
 }
+
+@media screen and (max-width: 768px) {
+  .content-map {
+      flex-direction: column;
+  }
+  .map{
+    width: 100% !important;
+    height: 50vh;
+  }
+  .list-monitoring{
+    width: 100% !important;
+    height: auto !important;
+  }
+}

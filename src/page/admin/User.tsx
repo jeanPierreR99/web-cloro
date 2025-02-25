@@ -10,6 +10,7 @@ import {
   Spin,
   Upload,
   Avatar,
+  InputNumber,
 } from "antd";
 import TableGestor from "../../components/TableGestor";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
@@ -285,7 +286,7 @@ const User = () => {
               label="Teléfono"
               rules={[{ required: true, message: "Por favor ingrese el teléfono" }]}
             >
-              <Input placeholder="Teléfono del gestor" />
+              <InputNumber style={{width:"100%"}} placeholder="Teléfono del gestor" />
             </Form.Item>
 
             <Form.Item

@@ -167,7 +167,7 @@ const Monitoring = () => {
       console.error("Error al obtener datos: ", error);
     }
   };
-
+  console.log(infoAll)
   const handleExport = () => {
     const centro_nombre = infoAll?.centro_poblado?.centro_nombre;
     const centro_provincia = infoAll?.centro_poblado?.centro_provincia;
@@ -246,7 +246,7 @@ const Monitoring = () => {
       dataIndex: "monitor_cloro_observaciones",
       key: "monitor_cloro_observaciones",
       render: (data: string) => (
-        <span style={{color: "red", opacity:.7}}>{data}</span>
+        <span style={{ color: "red", opacity: .7 }}>{data}</span>
       )
     },
     {
