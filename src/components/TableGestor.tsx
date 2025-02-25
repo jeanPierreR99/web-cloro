@@ -13,6 +13,7 @@ import {
   Popconfirm,
   InputNumber,
   Avatar,
+  Image,
 } from "antd";
 import { centrosProp } from "../page/admin/PopulateCenter";
 import {
@@ -335,7 +336,7 @@ const TableGestor: React.FC<GestorTableProps> = ({
               { required: true, message: "Por favor ingrese el teléfono" },
             ]}
           >
-            <InputNumber style={{width:"100%"}} />
+            <InputNumber style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
             name="gestor_user"
@@ -373,100 +374,108 @@ const TableGestor: React.FC<GestorTableProps> = ({
         onCancel={() => setIsInfoModalVisible(false)}
         footer={null}
       >
-        <table style={{ width: "100%" }}>
-          <thead>
-            <tr>
-              {" "}
-              <th colSpan={2} style={{ background: "#f2f2f2" }}>
-                Personal
-              </th>
-            </tr>
-          </thead>
+        <div style={{ display: "flex", gap: 10 }}>
           <Spin spinning={loadByEdit} tip={"...cargando"}>
-            <tbody style={{ textAlign: "justify" }}>
-              <tr>
-                <th>Fecha de registro: </th>
-                <td>{infoGestor?.gestor.gestor_create_at}</td>
-              </tr>
-              <tr>
-                <th>DNI:</th>
-                <td>{infoGestor?.gestor.gestor_dni}</td>
-              </tr>
-              <tr>
-                <th>Nombre:</th>
-                <td>{infoGestor?.gestor.gestor_name_complete}</td>
-              </tr>
-              <tr>
-                <th>Telefono:</th>
-                <td>{infoGestor?.gestor.gestor_phone}</td>
-              </tr>
-              <tr>
-                <th>Estado:</th>
-                <td>
-                  {infoGestor && (
-                    <Tag
-                      color={infoGestor.gestor.gestor_status ? "green" : "red"}
-                    >
-                      {infoGestor.gestor.gestor_status ? "Activo" : "Baja"}
-                    </Tag>
-                  )}
-                </td>
-              </tr>
-            </tbody>
+            <Image style={{ width: 150, height: 150, borderRadius: "100%" }} src={infoGestor?.gestor.gestor_image}></Image>
           </Spin>
-        </table>
-        <table style={{ width: "100%" }}>
-          <thead>
-            <tr>
-              {" "}
-              <th colSpan={2} style={{ background: "#f2f2f2" }}>
-                Centro Poblado
-              </th>
-            </tr>
-          </thead>
-          <Spin spinning={loadByEdit} tip={"...cargando"}>
-            <tbody style={{ textAlign: "justify" }}>
-              <tr>
-                <th>Centro Poblado:</th>
-                <td>{infoGestor?.centro_poblado.centro_nombre}</td>
-              </tr>
-              <tr>
-                <th>Provinvia:</th>
-                <td>{infoGestor?.centro_poblado.centro_provincia}</td>
-              </tr>
-              <tr>
-                <th>Distrito:</th>
-                <td>{infoGestor?.centro_poblado.centro_distrito}</td>
-              </tr>
-              <tr>
-                <th>Latitud:</th>
-                <td>{infoGestor?.centro_poblado.centro_latitud}</td>
-              </tr>
-              <tr>
-                <th>Longuitud:</th>
-                <td>{infoGestor?.centro_poblado.centro_longitud}</td>
-              </tr>
-              <tr>
-                <th>Meta Fed:</th>
-                <td>
-                  {infoGestor && (
-                    <Tag
-                      color={
-                        infoGestor.centro_poblado.centro_enMeta
-                          ? "green"
-                          : "red"
-                      }
-                    >
-                      {infoGestor.centro_poblado.centro_enMeta
-                        ? "En meta"
-                        : "No"}
-                    </Tag>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </Spin>
-        </table>
+          <div>
+            <table style={{ width: "100%" }}>
+              <thead>
+                <tr>
+                  {" "}
+                  <th colSpan={2} style={{ background: "#f2f2f2" }}>
+                    Personal
+                  </th>
+                </tr>
+              </thead>
+              <Spin spinning={loadByEdit} tip={"...cargando"}>
+                <tbody style={{ textAlign: "left" }}>
+                  <tr>
+                    <th>Fecha de registro: </th>
+                    <td>{infoGestor?.gestor.gestor_create_at}</td>
+                  </tr>
+                  <tr>
+                    <th>DNI:</th>
+                    <td>{infoGestor?.gestor.gestor_dni}</td>
+                  </tr>
+                  <tr>
+                    <th>Nombre:</th>
+                    <td>{infoGestor?.gestor.gestor_name_complete}</td>
+                  </tr>
+                  <tr>
+                    <th>Telefono:</th>
+                    <td>{infoGestor?.gestor.gestor_phone}</td>
+                  </tr>
+                  <tr>
+                    <th>Estado:</th>
+                    <td>
+                      {infoGestor && (
+                        <Tag
+                          color={infoGestor.gestor.gestor_status ? "green" : "red"}
+                        >
+                          {infoGestor.gestor.gestor_status ? "Activo" : "Baja"}
+                        </Tag>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </Spin>
+            </table>
+            <table style={{ width: "100%", marginTop: 10 }}>
+              <thead>
+                <tr>
+                  {" "}
+                  <th colSpan={2} style={{ background: "#f2f2f2" }}>
+                    Centro Poblado
+                  </th>
+                </tr>
+              </thead>
+              <Spin spinning={loadByEdit} tip={"...cargando"}>
+                <tbody style={{ textAlign: "left" }}>
+                  <tr>
+                    <th>Centro Poblado:</th>
+                    <td>{infoGestor?.centro_poblado.centro_nombre}</td>
+                  </tr>
+                  <tr>
+                    <th>Provinvia:</th>
+                    <td>{infoGestor?.centro_poblado.centro_provincia}</td>
+                  </tr>
+                  <tr>
+                    <th>Distrito:</th>
+                    <td>{infoGestor?.centro_poblado.centro_distrito}</td>
+                  </tr>
+                  <tr>
+                    <th>Latitud:</th>
+                    <td>{infoGestor?.centro_poblado.centro_latitud}</td>
+                  </tr>
+                  <tr>
+                    <th>Longuitud:</th>
+                    <td>{infoGestor?.centro_poblado.centro_longitud}</td>
+                  </tr>
+                  <tr>
+                    <th>Meta Fed:</th>
+                    <td>
+                      {infoGestor && (
+                        <Tag
+                          color={
+                            infoGestor.centro_poblado.centro_enMeta
+                              ? "green"
+                              : "red"
+                          }
+                        >
+                          {infoGestor.centro_poblado.centro_enMeta
+                            ? "En meta"
+                            : "No"}
+                        </Tag>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </Spin>
+            </table>
+          </div>
+        </div>
+
       </Modal>
       {/* monitoreo */}
       <Modal

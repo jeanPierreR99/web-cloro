@@ -54,7 +54,7 @@ const PopulateCenter: React.FC = () => {
 
   const provincias: any = {
     Manu: ["Manu", "Fitzcarrald", "Madre de Dios", "Huepetue"],
-    Tahuamanu: ["Tahuamanu", "Iñapari"],
+    Tahuamanu: ["Tahuamanu", "Iñapari", "Iberia"],
     Tambopata: ["Tambopata", "Inambari", "Las piedras", "Laberinto"],
   };
 

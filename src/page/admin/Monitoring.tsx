@@ -235,11 +235,15 @@ const Monitoring = () => {
       title: "Punto Estrategico",
       dataIndex: "monitor_cloro_punto",
       key: "monitor_cloro_punto",
+      sorter: (a: any, b: any) => a.monitor_cloro_punto.localeCompare(b.monitor_cloro_punto),
+
     },
     {
       title: "Periodo",
       dataIndex: "monitor_cloro_tipo",
       key: "monitor_cloro_tipo",
+      sorter: (a: any, b: any) => a.monitor_cloro_tipo.localeCompare(b.monitor_cloro_tipo),
+
     },
     {
       title: "Observaciones",

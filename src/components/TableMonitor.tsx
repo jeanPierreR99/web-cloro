@@ -19,18 +19,20 @@ const TableMonitor = ({ monitorGestor }: any) => {
       title: "Periodo",
       dataIndex: "monitor_cloro_tipo",
       key: "monitor_cloro_tipo",
+      sorter: (a: any, b: any) => a.monitor_cloro_tipo.localeCompare(b.monitor_cloro_tipo),
     },
     {
       title: "Punto Estrategico",
       dataIndex: "monitor_cloro_punto",
       key: "monitor_cloro_punto",
+      sorter: (a: any, b: any) => a.monitor_cloro_punto.localeCompare(b.monitor_cloro_punto),
     },
     {
       title: "Observaciones",
       dataIndex: "monitor_cloro_observaciones",
       key: "monitor_cloro_observaciones",
       render: (data: string) => (
-        <span style={{color: "red", opacity:.7}}>{data}</span>
+        <span style={{ color: "red", opacity: .7 }}>{data}</span>
       )
     },
     {
